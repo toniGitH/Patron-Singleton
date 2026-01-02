@@ -1,34 +1,211 @@
-# Sistema de Gestión de Usuarios
+# 1️⃣ Patrón Singleton - Guía Completa
 
-## ¿Qué hace este programa?
+## 🎯 Finalidad de este repositorio
 
-Este es un **sistema de gestión de usuarios** que permite:
-
-1. **Registrar usuarios** con nombre, email y contraseña
-2. **Validar contraseñas** según criterios de seguridad configurados
-3. **Gestionar inicios de sesión** con control de intentos fallidos
-4. **Bloquear usuarios** automáticamente tras varios intentos fallidos
-5. **Controlar sesiones** con sistema de expiración por tiempo de inactividad
-6. **Modo mantenimiento** para pausar el acceso de todos los usuarios
-
-### Funcionalidad real del programa
-
-Imagina que es el backend de una aplicación web donde los usuarios se registran e inician sesión. El sistema:
-
-- Crea cuentas de usuario con sus datos personales
-- Verifica que las contraseñas cumplan requisitos mínimos de seguridad
-- Permite a los usuarios iniciar sesión con sus credenciales
-- Protege las cuentas bloqueándolas tras varios intentos fallidos de login
-- Cierra sesiones automáticamente si el usuario está inactivo demasiado tiempo
-- Puede entrar en modo mantenimiento para actualizaciones (bloqueando todos los accesos)
-
-**Es como un sistema de login real**, similar al que usas en cualquier web (Gmail, Facebook, tu banco, etc.).
+Repositorio creado para explicar el patrón Singleton y su implementación mediante un ejemplo práctico en PHP.
 
 ---
 
-## Explicación de cada clase
+## 💡 El patrón Singleton
 
-### 1. ConfiguracionApp.php - Configuración Global (SINGLETON)
+El patrón Singleton es un **patrón de diseño creacional** que garantiza que una clase tenga una **única instancia en toda la aplicación** y proporciona un **punto de acceso global a esa instancia**.
+
+Imagina que tienes una aplicación y necesitas un objeto de configuración. 
+
+No tiene sentido crear 10 objetos de configuración diferentes porque todos tendrían la misma información. El Singleton asegura que solo exista uno y que todos lo compartan.
+
+### 👉🏼 ¿Para qué se usa?
+
+El Singleton se utiliza cuando:
+
+- Necesitas exactamente una instancia de una clase en toda tu aplicación
+- Quieres controlar el acceso a un recurso compartido (como una conexión a base de datos, un archivo de configuración, un sistema de logs, etc.)
+- Necesitas un punto de acceso global a esa instancia
+
+Ejemplos del mundo real:
+
+- Configuración de la aplicación: Solo necesitas un objeto con la configuración
+- Gestor de base de datos: Una única conexión compartida
+- Sistema de logs: Un único archivo donde escribir todos los registros
+- Caché: Un único espacio de almacenamiento temporal
+- Gestor de sesiones: Un único controlador de las sesiones de usuario
+
+### 👉🏼 ¿Qué características debe tener un patrón Singleton?
+
+✅ **IMPRESCINDIBLE** (lo MÍNIMO para que sea Singleton)
+
+Solo hay 3 cosas absolutamente necesarias:
+
+**1. Constructor privado:**
+
+```php
+private function __construct() {}
+```
+
+¿Por qué? Sin esto, cualquiera puede hacer new MiClase() y tendrías múltiples instancias. Es OBLIGATORIO.
+
+**2. Propiedad estática privada que guarda la instancia:**
+
+```php
+private static ?MiClase $instancia = null;
+```
+
+¿Por qué? Necesitas un lugar donde guardar la única instancia. Es OBLIGATORIO.
+
+**3. Método estático público para obtener la instancia:**
+
+```php
+public static function obtenerInstancia(): MiClase
+{
+    if (self::$instancia === null) {
+        self::$instancia = new self();
+    }
+    return self::$instancia;
+}
+```
+
+¿Por qué? Es la única forma de acceder a la instancia. Es OBLIGATORIO.
+
+Con solo estas 3 cosas ya tienes un Singleton funcional.
+
+⚠️ **RECOMENDADO** (buenas prácticas, pero NO obligatorio)
+
+**4. Prevención de clonación:**
+
+```php
+private function __clone() {}
+```
+
+¿Por qué recomendado?
+
+El método __clone() es un método mágico **nativo** de PHP que se ejecuta automáticamente cuando intentas clonar un objeto con la palabra clone.
+
+Evita que alguien haga:
+
+```php
+$instancia1 = MiClase::obtenerInstancia();
+$instancia2 = clone $instancia1; // Sin __clone privado, esto crea una copia
+```
+
+Es decir, que es un método que nos permitiría, una vez creada la instancia original del singleton $instancia1, crear una copia de esta instancia original desde fuera de la clase singleton, de forma que se rompería el Singleton porque tendríamos dos instancias diferentes de la misma clase.
+
+Si implementamos el método __clone() dentro de la propia clase singleton como método privado, entonces no se podrá clonar la instancia original del singleton desde fuera de la clase singleton:
+
+```php
+$instancia1 = MiClase::obtenerInstancia();
+$instancia2 = clone $instancia1; // ❌ ERROR: Cannot access private method __clone()
+```
+
+Evidentemente, sí podrías clonar la instancia original del singleton desde dentro de la propia clase singleton, pero en este caso, estarías rompiendo el Singleton tú mismo intencionadamente. No tiene sentido hacerlo.
+
+¿Es obligatorio prevenir la clonación? NO. El Singleton funciona sin esto, pero es una buena práctica para evitar "trampas".
+
+**5. Prevención de serialización:**
+
+```php
+public function __wakeup()
+{
+    throw new \Exception("No se puede deserializar un Singleton");
+}
+```
+
+¿Por qué recomendado? Evita que alguien haga:
+
+```php
+$instancia = MiClase::obtenerInstancia();
+$serializado = serialize($instancia);
+// ...más tarde...
+$instancia2 = unserialize($serializado); // Sin __wakeup, esto crea otra instancia
+```
+
+**¿Es obligatorio?** NO. El Singleton funciona sin esto, pero es una buena práctica para casos avanzados.
+
+### 👉🏼 ¿Qué supone usar Singleton?
+
+Ventajas:
+
+- Garantiza una única instancia
+- Acceso controlado y global
+- Ahorro de memoria (una sola instancia)
+- Inicialización diferida (se crea solo cuando se necesita)
+
+Desventajas:
+
+- Puede dificultar las pruebas unitarias
+- Viola el principio de responsabilidad única (gestiona su propia creación)
+- Puede introducir dependencias ocultas
+- En aplicaciones multihilo puede requerir sincronización
+
+---
+
+## 🧪 Ejemplo de implementación: Sistema de Gestión de Usuarios
+
+### 🔧 ¿Qué hace esta aplicación de ejemplo?
+
+Es un **sistema de gestión de usuarios** que:
+
+1. **Permite registrar usuarios** con nombre, email y contraseña.
+2. **Verifica contraseñas** para asegurarse de que cumplan con los requisitos de seguridad configurados.
+3. **Permite iniciar sesión** a los usuarios con sus credenciales, con control de intentos fallidos.
+4. **Protege las cuentas** bloqueándolas tras varios intentos fallidos de login.
+5. **Cierra sesiones automáticamente** si el usuario está inactivo demasiado tiempo.
+6. **Puede entrar en modo mantenimiento** para actualizaciones (bloqueando todos los accesos).
+
+**Es como un sistema de login real**, similar al que usas en cualquier web (Gmail, Facebook, tu banco, etc.).
+
+>⚠️ **IMPORTANTE**
+>
+> No es un sistema de login y registro completo. No es un frontend con un formulario de registro y login, sino sólo una parte de la lógica de dicha implementación para ejemplificar cómo, con el patrón Singleton, aunque haya varias instancias de usuarios que dependen de una configuración global, todas ellas comparten esa misma configuración, una misma y única instancia de configuración.
+
+### 🔄 Funcionamiento de la aplicación (flujo completo)
+
+1. **Al cargar la página**, se crea la instancia única de ConfiguracionApp
+2. **Se crean varios usuarios**, cada uno:
+   - Consulta la configuración para validar su contraseña
+   - Se registra con sus datos únicos
+3. **Cada usuario intenta iniciar sesión**:
+   - Consulta la configuración para saber cuántos intentos tiene
+   - Consulta si la app está en mantenimiento
+   - Valida su contraseña
+   - Se bloquea si falla demasiadas veces (según la configuración global)
+4. **La demostración muestra** que todos los usuarios comparten la misma configuración
+
+### 🎖️ El papel del Singleton:
+
+- **ConfiguracionApp es única**: Solo existe una configuración para todos
+- **Todos los usuarios la comparten**: No importa cuántos usuarios crees, todos leen la misma configuración
+- **Cambios globales**: Si cambias algo en la configuración (ej: máximo de intentos de 3 a 5), el cambio afecta a **todos** los usuarios instantáneamente
+- **Consistencia**: No hay riesgo de que usuarios diferentes tengan reglas diferentes
+
+### 🤼 Comparación: Con Singleton vs Sin Singleton
+
+**SIN Singleton (problema):**
+```
+Usuario1 → ConfiguracionApp #1 (max_intentos = 3)
+Usuario2 → ConfiguracionApp #2 (max_intentos = 3)
+Usuario3 → ConfiguracionApp #3 (max_intentos = 3)
+
+Cambias max_intentos a 5 en #1
+Usuario1 → max_intentos = 5
+Usuario2 → max_intentos = 3 (no se enteró del cambio)
+Usuario3 → max_intentos = 3 (no se enteró del cambio)
+```
+**Resultado: CAOS e inconsistencia**
+
+**CON Singleton (solución):**
+```
+Usuario1 → ConfiguracionApp (única)
+Usuario2 → ConfiguracionApp (única)  
+Usuario3 → ConfiguracionApp (única)
+
+Cambias max_intentos a 5
+TODOS los usuarios ven el cambio inmediatamente
+```
+**Resultado: Consistencia total**
+
+### 📄 Explicación de cada archivo del ejemplo
+
+#### ⚙️ ConfiguracionApp.php - Configuración Global (SINGLETON)
 
 **¿Qué es?**
 Es la clase que implementa el patrón Singleton y contiene la **configuración global de la aplicación**.
@@ -48,6 +225,7 @@ Parámetros que afectan a **TODA la aplicación**, no a usuarios específicos:
 - **Registros por página**: 25
 
 **¿Por qué es Singleton?**
+
 Porque **solo debe existir UNA configuración** para toda la aplicación. No tiene sentido que cada usuario tenga su propia configuración diferente. Todos deben seguir las mismas reglas.
 
 **Métodos principales:**
@@ -62,9 +240,7 @@ Porque **solo debe existir UNA configuración** para toda la aplicación. No tie
 - Método estático `obtenerInstancia()` que controla la creación
 - No se puede clonar ni deserializar
 
----
-
-### 2. Usuario.php - Clase de Usuario (CLASE NORMAL, NO SINGLETON)
+#### 👤 Usuario.php - Clase de Usuario (CLASE NORMAL, NO SINGLETON)
 
 **¿Qué es?**
 Representa a **un usuario individual** del sistema. Puedes crear **MUCHAS instancias** (muchos usuarios).
@@ -122,9 +298,7 @@ El usuario **consulta** la configuración global (Singleton) para:
 
 Pero el usuario **NO modifica** la configuración. Solo la lee para ajustarse a las reglas globales.
 
----
-
-### 3. index.php - Archivo Principal (DEMOSTRACIÓN)
+#### 📌 index.php - Archivo Principal (DEMOSTRACIÓN)
 
 **¿Qué hace?**
 Es el archivo de ejecución que demuestra el funcionamiento del sistema.
@@ -156,9 +330,7 @@ Es el archivo de ejecución que demuestra el funcionamiento del sistema.
    - Resultados de los intentos de login
    - Demostración del Singleton
 
----
-
-### 4. estilos.css - Presentación Visual
+#### 4. 🎨 estilos.css - Presentación Visual
 
 **¿Qué hace?**
 Proporciona estilos CSS para que la página se vea profesional y sea fácil de leer.
@@ -172,62 +344,46 @@ Proporciona estilos CSS para que la página se vea profesional y sea fácil de l
 
 ---
 
-## ¿Cómo funciona todo junto?
+## 🚀 Cómo ejecutar la aplicación
 
-### Flujo completo:
+1. Crea la carpeta del proyecto (por ejemplo, patrones/singleton) dentro de la carpeta htdocs (o equivalente según la versión de XAMPP y sistema operativo que uses).
+2. Guarda en esa carpeta los archivos PHP y CSS.
 
-1. **Al cargar la página**, se crea la instancia única de ConfiguracionApp
-2. **Se crean varios usuarios**, cada uno:
-   - Consulta la configuración para validar su contraseña
-   - Se registra con sus datos únicos
-3. **Cada usuario intenta iniciar sesión**:
-   - Consulta la configuración para saber cuántos intentos tiene
-   - Consulta si la app está en mantenimiento
-   - Valida su contraseña
-   - Se bloquea si falla demasiadas veces (según la configuración global)
-4. **La demostración muestra** que todos los usuarios comparten la misma configuración
+#### 📍 Para ejecutarlo mediante XAMPP:
 
-### El papel del Singleton:
+3. Arranca XAMPP.
+4. Accede a index.php desde tu navegador (por ejemplo: http://localhost/patrones/singleton/index.php)
 
-- **ConfiguracionApp es única**: Solo existe una configuración para todos
-- **Todos los usuarios la comparten**: No importa cuántos usuarios crees, todos leen la misma configuración
-- **Cambios globales**: Si cambias algo en la configuración (ej: máximo de intentos de 3 a 5), el cambio afecta a **todos** los usuarios instantáneamente
-- **Consistencia**: No hay riesgo de que usuarios diferentes tengan reglas diferentes
+#### 📍 Para ejecutarlo usando el servidor web interno de PHP
 
-### Comparación: Con Singleton vs Sin Singleton
+PHP trae un servidor web ligero que sirve para desarrollo. No necesitas instalar Apache ni XAMPP.
 
-**SIN Singleton (problema):**
+3. Abre la terminal y navega a la carpeta de tu proyecto:
+
+```bash
+cd ~/Documentos/htdocs/patrones/singleton
 ```
-Usuario1 → ConfiguracionApp #1 (max_intentos = 3)
-Usuario2 → ConfiguracionApp #2 (max_intentos = 3)
-Usuario3 → ConfiguracionApp #3 (max_intentos = 3)
+4. Dentro de esa ubicación, ejecuta:
 
-Cambias max_intentos a 5 en #1
-Usuario1 → max_intentos = 5
-Usuario2 → max_intentos = 3 (no se enteró del cambio)
-Usuario3 → max_intentos = 3 (no se enteró del cambio)
+```bash
+php -S localhost:8000
 ```
-**Resultado: CAOS e inconsistencia**
 
-**CON Singleton (solución):**
-```
-Usuario1 → ConfiguracionApp (única)
-Usuario2 → ConfiguracionApp (única)  
-Usuario3 → ConfiguracionApp (única)
+Con esto, lo que estás haciendo es crear un servidor web php, que está escuchando en el puerto 8000 (o en el que hayas elegido) cuya carpeta raíz es la carpeta seleccionada.
+   
+>💡 **TIP **
+>
+> No es obligatorio usar el puerto 8000, puedes usar el que desees, por ejemplo, el 8001.
 
-Cambias max_intentos a 5
-TODOS los usuarios ven el cambio inmediatamente
-```
-**Resultado: Consistencia total**
+5. Ahora, abre tu navegador y accede a http://localhost:8000
 
----
+Ya podrás visualizar el documento index.php con toda la información del ememplo.
 
-## Resumen
-
-**Función del programa**: Sistema de gestión de usuarios con registro, login, bloqueos automáticos y control de sesiones.
-
-**ConfiguracionApp (Singleton)**: Configuración global única que todos los usuarios consultan y comparten.
-
-**Usuario (clase normal)**: Representa a cada usuario individual. Puede haber muchos. Consulta la configuración global para ajustarse a las reglas.
-
-**Relación**: Los usuarios **dependen** de la configuración para funcionar correctamente, pero **no son parte** de la configuración. La configuración es transversal a toda la aplicación, los usuarios son entidades individuales del dominio.
+>💡 **TIP*
+>
+> No es necesario indicar `http://localhost:8000/index.php` porque el servidor va a buscar dentro de la carpeta raíz (Documentos/htdocs/patrones/singleton, en este caso), un archivo index.php o index.html de forma automática. Si existe, lo sirve como página principal.
+>
+> Por eso, estas dos URLs funcionan igual:
+>
+> http://localhost:8000
+> http://localhost:8000/index.php
