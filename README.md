@@ -78,37 +78,54 @@ public static function obtenerInstancia(): MiClase
 
 Con solo estas 3 cosas ya tienes un Singleton funcional.
 
+<br>
+
 ⚠️ **RECOMENDADO**, pero NO obligatorio (buenas prácticas)
 
 **4. Prevención de clonación:**
 
-```php
-private function __clone() {}
-```
-
-El método __clone() es un método mágico **nativo** de PHP que se ejecuta automáticamente cuando intentas clonar un objeto con la palabra clone.
-
-¿Por qué se recomienta evitar la clonación?
+¿Por qué se recomienda evitar la clonación?
 
 Evita que alguien haga:
 
 ```php
 $instancia1 = MiClase::obtenerInstancia();
-$instancia2 = clone $instancia1; // Sin __clone privado, esto crea una copia
+$instancia2 = clone $instancia1; // Sin prevenir la clonación, esto crearía una copia de la instancia original
 ```
 
-Es decir, que es un método que nos permitiría, una vez creada la instancia original del singleton $instancia1, crear una copia de esta instancia original desde fuera de la clase singleton, de forma que se rompería el Singleton porque tendríamos dos instancias diferentes de la misma clase.
+El método **__clone()** es un **método mágico nativo de PHP** que se ejecuta automáticamente cuando intentas clonar un objeto con la palabra `clone`.
 
-Si implementamos el método __clone() dentro de la propia clase singleton como método privado, entonces no se podrá clonar la instancia original del singleton desde fuera de la clase singleton:
+Es decir, que es un método que nos permitiría, una vez creada la instancia original del singleton `$instancia1` (de la que sólo queremos tener una para toda la aplicación) crear una copia de esta instancia original desde fuera de la clase singleton, de forma que **se rompería el Singleton porque tendríamos dos instancias diferentes de la misma clase**.
+
+La solución están en implementar, **DENTRO** de la propia clase singleton, el método **__clone()** , como **método privado**:
+
+```php
+private function __clone() {}
+```
+
+De esta forma, **no se podrá clonar la instancia original del singleton desde fuera de la clase singleton**:
+
 
 ```php
 $instancia1 = MiClase::obtenerInstancia();
 $instancia2 = clone $instancia1; // ❌ ERROR: Cannot access private method __clone()
 ```
 
-Evidentemente, sí podrías clonar la instancia original del singleton desde dentro de la propia clase singleton, pero en este caso, estarías rompiendo el Singleton tú mismo intencionadamente. No tiene sentido hacerlo.
+Evidentemente, SÍ podrías clonar la instancia original del singleton desde dentro de la propia clase singleton, pero en este caso, estarías rompiendo el Singleton tú mismo intencionadamente. No tiene sentido hacerlo.
 
 **5. Prevención de deserialización:**
+
+¿Por qué se recomienda evitar la deserialización?
+
+Evita que alguien haga:
+
+```php
+$instancia = MiClase::obtenerInstancia();
+$serializado = serialize($instancia);
+
+// ...y más tarde...
+$instancia2 = unserialize($serializado); // Sin prevenir la deserialización, esto crearía una copia de la instancia original
+```
 
 La **serialización** es el proceso de convertir un objeto (o una estructura de datos) en una cadena de texto (string), con el objetivo de poder:
 
@@ -128,32 +145,21 @@ Y la **deserialización** es el proceso contrario:
 $objeto = unserialize($cadena);
 ```
 
-No se puede serializar cualquier objeto ni se puede deserializar cualquier cadena de texto. 
+No se puede serializar cualquier objeto ni se puede deserializar cualquier cadena de texto (existen unos límites). 
 
-Para serializar se utiliza el método mágico __sleep(), y para deserializar se utiliza el método mágico __wakeup().
+En la **serialización** interviene el método mágico **__sleep()**, y en la **deserialización** interviene el método mágico **__wakeup()**.
 
-Para mantener la integridad de un Singleton, la serialización no es un problema, porque sólo convierte nuestra instancia en una cadena de texto, pero la deserialización sí lo es, porque al deserializar la cadena de texto, se crearía una nueva instancia de la clase singleton, lo que rompería el Singleton.
+Para mantener la integridad de un Singleton, **la serialización no es un problema**, porque sólo convierte nuestra instancia en una cadena de texto, pero **la deserialización SÍ lo es**, porque al deserializar la cadena de texto, **se crearía una nueva instancia de la clase singleton**, lo que rompería el Singleton.
 
-Por ese motivo, si queremos proteger un Singleton ante este problema, debemos actuar sobre el método __wakeup(), que es el que se ejecuta cuando se deserializa un objeto. Debemos definirlo en la clase Singleton para que sobreescriba el método mágico __wakeup() que viene por defecto en PHP.
+Por ese motivo, si queremos proteger un Singleton ante este problema, debemos actuar sobre el método **__wakeup()**, que es el que se ejecuta cuando se deserializa un objeto. Debemos definirlo en la clase Singleton para que sobreescriba el método mágico **__wakeup()** que viene por defecto en PHP.
 
-Dado que el método __wakeup() NO acepta ser privado, lo que significa que no se puede hacer private function __wakeup() {}, debemos mantenerlo como public function __wakeup() {}, y en su interior, lanzar una excepción:
+Dado que el método **__wakeup()** NO acepta ser privado, lo que significa que no se puede hacer `private function __wakeup() {}`, debemos mantenerlo como `public function __wakeup() {}`, y en su interior, lanzar una excepción:
 
 ```php
 public function __wakeup()
 {
     throw new \Exception("No se puede deserializar un Singleton");
 }
-```
-
-¿Por qué se recomienta evitar la deserialización?
-
-Evita que alguien haga:
-
-```php
-$instancia = MiClase::obtenerInstancia();
-$serializado = serialize($instancia);
-// ...más tarde...
-$instancia2 = unserialize($serializado); // Sin __wakeup, esto crea otra instancia
 ```
 
 ### 👉🏼 ¿Qué supone usar Singleton?
