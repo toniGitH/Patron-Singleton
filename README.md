@@ -3,8 +3,6 @@
 
 Repositorio creado para explicar el patrón Singleton y su implementación mediante un ejemplo práctico en PHP.
 
-<br>
-
 <details>
   <summary><h2 style="display: inline-block; margin: 0; padding: 0; border: none;">📑 Índice de contenidos</h2></summary>
   <ul>
@@ -15,6 +13,8 @@ Repositorio creado para explicar el patrón Singleton y su implementación media
 </details>
 
 ---
+
+<br>
 
 ## 💡 El patrón Singleton
 
@@ -78,7 +78,7 @@ public static function obtenerInstancia(): MiClase
 
 Con solo estas 3 cosas ya tienes un Singleton funcional.
 
-⚠️ **RECOMENDADO** (buenas prácticas, pero NO obligatorio)
+⚠️ **RECOMENDADO**, pero NO obligatorio (buenas prácticas)
 
 **4. Prevención de clonación:**
 
@@ -107,8 +107,6 @@ $instancia2 = clone $instancia1; // ❌ ERROR: Cannot access private method __cl
 ```
 
 Evidentemente, sí podrías clonar la instancia original del singleton desde dentro de la propia clase singleton, pero en este caso, estarías rompiendo el Singleton tú mismo intencionadamente. No tiene sentido hacerlo.
-
-**¿Es obligatorio?** NO. El Singleton funciona sin esto, pero es una buena práctica.
 
 **5. Prevención de deserialización:**
 
@@ -158,8 +156,6 @@ $serializado = serialize($instancia);
 $instancia2 = unserialize($serializado); // Sin __wakeup, esto crea otra instancia
 ```
 
-**¿Es obligatorio?** NO. El Singleton funciona sin esto, pero es una buena práctica.
-
 ### 👉🏼 ¿Qué supone usar Singleton?
 
 Ventajas:
@@ -176,7 +172,11 @@ Desventajas:
 - Puede introducir dependencias ocultas
 - En aplicaciones multihilo puede requerir sincronización
 
+<br>
+
 ---
+
+<br>
 
 ## 🧪 Ejemplo de implementación: Sistema de Gestión de Usuarios
 
@@ -382,7 +382,11 @@ Proporciona estilos CSS para que la página se vea profesional y sea fácil de l
 - Layout en grid para organización
 - Destacados visuales para elementos importantes
 
+<br>
+
 ---
+
+<br>
 
 ## 🚀 Cómo ejecutar la aplicación
 
@@ -411,15 +415,20 @@ php -S localhost:8000
 
 Con esto, lo que estás haciendo es crear un servidor web php, que está escuchando en el puerto 8000 (o en el que hayas elegido) cuya carpeta raíz es la carpeta seleccionada.
    
-   >💡 No es obligatorio usar el puerto 8000, puedes usar el que desees, por ejemplo, el 8001.
+>💡
+>
+>No es obligatorio usar el puerto 8000, puedes usar el que desees, por ejemplo, el 8001.
 
 5. Ahora, abre tu navegador y accede a http://localhost:8000
 
 Ya podrás visualizar el documento index.php con toda la información del ememplo.
 
-   >💡 No es necesario indicar `http://localhost:8000/index.php` porque el servidor va a buscar dentro de la carpeta raíz (en este caso, en Documentos/htdocs/patrones/singleton), un archivo index.php o index.html de forma automática. Si existe, lo sirve como página principal.
-   >
-   > Por eso, estas dos URLs funcionan igual:
-   >
-   > http://localhost:8000
-   > http://localhost:8000/index.php
+>💡
+>
+> No es necesario indicar `http://localhost:8000/index.php` porque el servidor va a buscar dentro de la carpeta raíz (en este caso, en Documentos/htdocs/patrones/singleton), un archivo index.php o index.html de forma automática. Si existe, lo sirve como página principal.
+>
+> Por eso, estas dos URLs funcionan igual:
+>
+> http://localhost:8000
+>
+> http://localhost:8000/index.php
