@@ -1,8 +1,18 @@
-# 1️⃣ Patrón Singleton - Guía Completa
+# 1️⃣ El patrón Singleton - Guía Completa
 
-## 🎯 Finalidad de este repositorio
 
 Repositorio creado para explicar el patrón Singleton y su implementación mediante un ejemplo práctico en PHP.
+
+<br>
+
+<details>
+  <summary><h2 style="display: inline-block; margin: 0; padding: 0; border: none;">📑 Índice de contenidos</h2></summary>
+  <ul>
+    <li>💡 <a href="#-el-patrón-singleton">El patrón Singleton</a></li>
+    <li>🧪 <a href="#-ejemplo-de-implementación-sistema-de-gestión-de-usuarios">Ejemplo de implementación: Sistema de Gestión de Usuarios</a></li>
+    <li>🚀 <a href="#-cómo-ejecutar-la-aplicación">Cómo ejecutar la aplicación</a></li>
+  </ul>
+</details>
 
 ---
 
@@ -76,9 +86,9 @@ Con solo estas 3 cosas ya tienes un Singleton funcional.
 private function __clone() {}
 ```
 
-¿Por qué recomendado?
-
 El método __clone() es un método mágico **nativo** de PHP que se ejecuta automáticamente cuando intentas clonar un objeto con la palabra clone.
+
+¿Por qué se recomienta evitar la clonación?
 
 Evita que alguien haga:
 
@@ -98,9 +108,37 @@ $instancia2 = clone $instancia1; // ❌ ERROR: Cannot access private method __cl
 
 Evidentemente, sí podrías clonar la instancia original del singleton desde dentro de la propia clase singleton, pero en este caso, estarías rompiendo el Singleton tú mismo intencionadamente. No tiene sentido hacerlo.
 
-¿Es obligatorio prevenir la clonación? NO. El Singleton funciona sin esto, pero es una buena práctica para evitar "trampas".
+**¿Es obligatorio?** NO. El Singleton funciona sin esto, pero es una buena práctica.
 
-**5. Prevención de serialización:**
+**5. Prevención de deserialización:**
+
+La **serialización** es el proceso de convertir un objeto (o una estructura de datos) en una cadena de texto (string), con el objetivo de poder:
+
+- Guardarlo (en un archivo, base de datos, caché, sesión…)
+- Enviarlo (por red, entre procesos…)
+- Reconstruirlo más adelante
+
+En PHP, el ejemplo típico es:
+
+```php
+$cadena = serialize($objeto);
+```
+
+Y la **deserialización** es el proceso contrario:
+
+```php
+$objeto = unserialize($cadena);
+```
+
+No se puede serializar cualquier objeto ni se puede deserializar cualquier cadena de texto. 
+
+Para serializar se utiliza el método mágico __sleep(), y para deserializar se utiliza el método mágico __wakeup().
+
+Para mantener la integridad de un Singleton, la serialización no es un problema, porque sólo convierte nuestra instancia en una cadena de texto, pero la deserialización sí lo es, porque al deserializar la cadena de texto, se crearía una nueva instancia de la clase singleton, lo que rompería el Singleton.
+
+Por ese motivo, si queremos proteger un Singleton ante este problema, debemos actuar sobre el método __wakeup(), que es el que se ejecuta cuando se deserializa un objeto. Debemos definirlo en la clase Singleton para que sobreescriba el método mágico __wakeup() que viene por defecto en PHP.
+
+Dado que el método __wakeup() NO acepta ser privado, lo que significa que no se puede hacer private function __wakeup() {}, debemos mantenerlo como public function __wakeup() {}, y en su interior, lanzar una excepción:
 
 ```php
 public function __wakeup()
@@ -109,7 +147,9 @@ public function __wakeup()
 }
 ```
 
-¿Por qué recomendado? Evita que alguien haga:
+¿Por qué se recomienta evitar la deserialización?
+
+Evita que alguien haga:
 
 ```php
 $instancia = MiClase::obtenerInstancia();
@@ -118,7 +158,7 @@ $serializado = serialize($instancia);
 $instancia2 = unserialize($serializado); // Sin __wakeup, esto crea otra instancia
 ```
 
-**¿Es obligatorio?** NO. El Singleton funciona sin esto, pero es una buena práctica para casos avanzados.
+**¿Es obligatorio?** NO. El Singleton funciona sin esto, pero es una buena práctica.
 
 ### 👉🏼 ¿Qué supone usar Singleton?
 
@@ -371,19 +411,15 @@ php -S localhost:8000
 
 Con esto, lo que estás haciendo es crear un servidor web php, que está escuchando en el puerto 8000 (o en el que hayas elegido) cuya carpeta raíz es la carpeta seleccionada.
    
->💡 **TIP **
->
-> No es obligatorio usar el puerto 8000, puedes usar el que desees, por ejemplo, el 8001.
+   >💡 No es obligatorio usar el puerto 8000, puedes usar el que desees, por ejemplo, el 8001.
 
 5. Ahora, abre tu navegador y accede a http://localhost:8000
 
 Ya podrás visualizar el documento index.php con toda la información del ememplo.
 
->💡 **TIP*
->
-> No es necesario indicar `http://localhost:8000/index.php` porque el servidor va a buscar dentro de la carpeta raíz (Documentos/htdocs/patrones/singleton, en este caso), un archivo index.php o index.html de forma automática. Si existe, lo sirve como página principal.
->
-> Por eso, estas dos URLs funcionan igual:
->
-> http://localhost:8000
-> http://localhost:8000/index.php
+   >💡 No es necesario indicar `http://localhost:8000/index.php` porque el servidor va a buscar dentro de la carpeta raíz (en este caso, en Documentos/htdocs/patrones/singleton), un archivo index.php o index.html de forma automática. Si existe, lo sirve como página principal.
+   >
+   > Por eso, estas dos URLs funcionan igual:
+   >
+   > http://localhost:8000
+   > http://localhost:8000/index.php
