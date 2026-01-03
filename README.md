@@ -97,7 +97,7 @@ El método **__clone()** es un **método mágico nativo de PHP** que se ejecuta 
 
 Es decir, que es un método que nos permitiría, una vez creada la instancia original del singleton `$instancia1` (de la que sólo queremos tener una para toda la aplicación) crear una copia de esta instancia original desde fuera de la clase singleton, de forma que **se rompería el Singleton porque tendríamos dos instancias diferentes de la misma clase**.
 
-La solución están en implementar, **DENTRO** de la propia clase singleton, el método **__clone()** , como **método privado**:
+La solución está en implementar, **DENTRO** de la propia clase singleton, el método **__clone()** , como **método privado**:
 
 ```php
 private function __clone() {}
@@ -419,15 +419,19 @@ cd ~/Documentos/htdocs/patrones/singleton
 php -S localhost:8000
 ```
 
-Con esto, lo que estás haciendo es crear un servidor web php, que está escuchando en el puerto 8000 (o en el que hayas elegido) cuya carpeta raíz es la carpeta seleccionada.
-   
 >💡
 >
->No es obligatorio usar el puerto 8000, puedes usar el que desees, por ejemplo, el 8001.
+> No es obligatorio usar el puerto 8000, puedes usar el que desees, por ejemplo, el 8001.
+
+Con esto, lo que estás haciendo es crear un servidor web php (cuya carpeta raíz es la carpeta seleccionada), que está escuchando en el puerto 8000 (o en el que hayas elegido).
+
+>💡
+>
+> Si quisieras, podrías crear simultáneamente tantos servidores como proyectos tengas en tu ordenador, siempre y cuando cada uno estuviera escuchando en un puerto diferente (8001, 8002, ...).
 
 5. Ahora, abre tu navegador y accede a http://localhost:8000
 
-Ya podrás visualizar el documento index.php con toda la información del ememplo.
+Ya podrás visualizar el documento index.php con toda la información del ejemplo.
 
 >💡
 >
