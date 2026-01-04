@@ -30,8 +30,15 @@ header {
 
 h1 {
     color: #667eea;
-    margin-bottom: 10px;
     font-size: 2.2em;
+    margin: 0 auto;
+}
+
+.patron {
+    color: #8093eb;
+    font-size: 1.7em;
+    display: inline-block;
+    margin: 0 auto;
 }
 
 .version {
@@ -47,6 +54,8 @@ h2 {
     align-items: center;
     gap: 10px;
 }
+
+
 
 .seccion {
     margin-bottom: 35px;

@@ -14,6 +14,7 @@
     <div class="container">
         <header>
             <h1><?= htmlspecialchars($config->obtener('nombre_aplicacion')) ?></h1>
+            <h2 class="patron">Ejemplo de Patrón <?= htmlspecialchars($config->obtener('patron')) ?></h2>
             <p class="version">Versión <?= htmlspecialchars($config->obtener('version')) ?></p>
         </header>
 
