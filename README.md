@@ -6,12 +6,12 @@ Repositorio creado para explicar el patrón Singleton y su implementación media
 <details>
   <summary><h2 style="display: inline-block; margin: 0; padding: 0; border: none;">📑 Índice de contenidos</h2></summary>
   <ul>
-    <li>💡 <a href="#-el-patrón-singleton">El patrón Singleton</a>
+    <li>🔎 <a href="#-el-patrón-singleton">El patrón Singleton</a>
       <ul>
-        <li>👉🏼 <a href="#-por-qué-nos-puede-interesar-tener-una-sola-instancia-de-una-clase">¿Por qué nos puede interesar tener una sola instancia de una clase?</a></li>
-        <li>👉🏼 <a href="#-para-qué-se-usa">¿Para qué se usa?</a></li>
-        <li>👉🏼 <a href="#-qué-características-debe-tener-un-patrón-singleton">¿Qué características debe tener un patrón Singleton?</a></li>
-        <li>👉🏼 <a href="#-qué-supone-usar-singleton">¿Qué supone usar Singleton?</a></li>
+        <li>🎯 <a href="#-para-qué-se-usa">¿Para qué se usa?</a></li>
+        <li>💡 <a href="#-por-qué-nos-puede-interesar-tener-una-sola-instancia-de-una-clase">¿Por qué nos puede interesar tener una sola instancia de una clase?</a></li>
+        <li>📋 <a href="#-qué-características-debe-tener-un-patrón-singleton">¿Qué características debe tener un patrón Singleton?</a></li>
+        <li>⚠️ <a href="#-qué-supone-usar-singleton">¿Qué supone usar Singleton?</a></li>
       </ul>
     </li>
     <li>🧪 <a href="#-ejemplo-de-implementación-sistema-de-gestión-de-usuarios">Ejemplo de implementación: Sistema de Gestión de Usuarios</a>
@@ -31,26 +31,11 @@ Repositorio creado para explicar el patrón Singleton y su implementación media
 
 <br>
 
-## 💡 El patrón Singleton
+## 🔎 El patrón Singleton
 
 El patrón Singleton es un **patrón de diseño creacional** que garantiza que una clase tenga una **única instancia en toda la aplicación** y proporciona un **punto de acceso global a esa instancia**.
 
-### 👉🏼 ¿Por qué nos puede interesar tener una sola instancia de una clase?
-
-Imagina que tienes una aplicación, con unos usuarios, y estos usuarios están sujetos a una única configuración de la aplicación común para todos los usuarios (número máximo de intentos de login, longitud de password, modo mantenimiento, etc...).
-
-Podrías representar esa configuración como una clase que se encargara de gestionarla.
-
-Como esa configuración DEBE ser común a todos los usuarios:
-
-- no tendría sentido crear un objeto de configuración diferente para cada usuario que se creara, porque todos esos objetos de configuración tendrían la misma información (si tuviéramos 20 usuarios, tendríamos 20 objetos de configuración, cuando en realidad, con uno solo sería suficiente).
-- si tuvieramos 20 usuarios, cada uno con su objeto de configuración, si quisiéramos, por ejemplo, poner la aplicación en modo mantenimiento, ¿cuál de esos 20 objetos de configuración tendríamos que modificar?. Si modificáramos sólo uno, el resto de los usuarios no tendrían la configuración actualizada. Por tanto, tendríamos que modificar la configuración de cada uno de esos 20 objetos de configuración, lo que sería absurdo.
-
-Debido a la naturaleza dinámica de una aplicación (parámetros de configuración, conexión a una base de datos, ...), que implica que ésta puede cambiar dinámicamente durante la ejecución de la aplicación, hace que tengamos que asegurarnos de que cuando haya cambios en esos parámetros, todos los elementos de la aplicación puedan ver esos cambios.
-
-El Singleton asegura que solo exista uno y que todos lo compartan, con todas las ventajas que eso conlleva.
-
-### 👉🏼 ¿Para qué se usa?
+### 🎯 ¿Para qué se usa?
 
 El Singleton se utiliza cuando:
 
@@ -66,7 +51,22 @@ Ejemplos del mundo real:
 - Caché: Un único espacio de almacenamiento temporal
 - Gestor de sesiones: Un único controlador de las sesiones de usuario
 
-### 👉🏼 ¿Qué características debe tener un patrón Singleton?
+### 💡 ¿Por qué nos puede interesar tener una sola instancia de una clase?
+
+Imagina que tienes una aplicación, con unos usuarios, y estos usuarios están sujetos a una única configuración de la aplicación común para todos los usuarios (número máximo de intentos de login, longitud de password, modo mantenimiento, etc...).
+
+Podrías representar esa configuración como una clase que se encargara de gestionarla.
+
+Como esa configuración DEBE ser común a todos los usuarios:
+
+- no tendría sentido crear un objeto de configuración diferente para cada usuario que se creara, porque todos esos objetos de configuración tendrían la misma información (si tuviéramos 20 usuarios, tendríamos 20 objetos de configuración, cuando en realidad, con uno solo sería suficiente).
+- si tuvieramos 20 usuarios, cada uno con su objeto de configuración, si quisiéramos, por ejemplo, poner la aplicación en modo mantenimiento, ¿cuál de esos 20 objetos de configuración tendríamos que modificar?. Si modificáramos sólo uno, el resto de los usuarios no tendrían la configuración actualizada. Por tanto, tendríamos que modificar la configuración de cada uno de esos 20 objetos de configuración, lo que sería absurdo.
+
+Debido a la naturaleza dinámica de una aplicación (parámetros de configuración, conexión a una base de datos, ...), que implica que ésta puede cambiar dinámicamente durante la ejecución de la aplicación, hace que tengamos que asegurarnos de que cuando haya cambios en esos parámetros, todos los elementos de la aplicación puedan ver esos cambios.
+
+El Singleton asegura que solo exista uno y que todos lo compartan, con todas las ventajas que eso conlleva.
+
+### 📋 ¿Qué características debe tener un patrón Singleton?
 
 **1. Constructor privado - ✅ IMPRESCINDIBLE**
 
@@ -181,7 +181,7 @@ public function __wakeup()
 }
 ```
 
-### 👉🏼 ¿Qué supone usar Singleton?
+### ⚠️ ¿Qué supone usar Singleton?
 
 Ventajas:
 
