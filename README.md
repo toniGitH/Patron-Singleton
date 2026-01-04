@@ -6,8 +6,23 @@ Repositorio creado para explicar el patrón Singleton y su implementación media
 <details>
   <summary><h2 style="display: inline-block; margin: 0; padding: 0; border: none;">📑 Índice de contenidos</h2></summary>
   <ul>
-    <li>💡 <a href="#-el-patrón-singleton">El patrón Singleton</a></li>
-    <li>🧪 <a href="#-ejemplo-de-implementación-sistema-de-gestión-de-usuarios">Ejemplo de implementación: Sistema de Gestión de Usuarios</a></li>
+    <li>💡 <a href="#-el-patrón-singleton">El patrón Singleton</a>
+      <ul>
+        <li>👉🏼 <a href="#-por-qué-nos-puede-interesar-tener-una-sola-instancia-de-una-clase">¿Por qué nos puede interesar tener una sola instancia de una clase?</a></li>
+        <li>👉🏼 <a href="#-para-qué-se-usa">¿Para qué se usa?</a></li>
+        <li>👉🏼 <a href="#-qué-características-debe-tener-un-patrón-singleton">¿Qué características debe tener un patrón Singleton?</a></li>
+        <li>👉🏼 <a href="#-qué-supone-usar-singleton">¿Qué supone usar Singleton?</a></li>
+      </ul>
+    </li>
+    <li>🧪 <a href="#-ejemplo-de-implementación-sistema-de-gestión-de-usuarios">Ejemplo de implementación: Sistema de Gestión de Usuarios</a>
+      <ul>
+        <li>🔧 <a href="#-qué-hace-esta-aplicación-de-ejemplo">¿Qué hace esta aplicación de ejemplo?</a></li>
+        <li>🔄 <a href="#-funcionamiento-de-la-aplicación-flujo-completo">Funcionamiento de la aplicación (flujo completo)</a></li>
+        <li>🎖️ <a href="#-el-papel-del-singleton">El papel del Singleton</a></li>
+        <li>🤼 <a href="#-comparación-con-singleton-vs-sin-singleton">Comparación: Con Singleton vs Sin Singleton</a></li>
+        <li>📄 <a href="#-explicación-de-cada-archivo-del-ejemplo">Explicación de cada archivo del ejemplo</a></li>
+      </ul>
+    </li>
     <li>🚀 <a href="#-cómo-ejecutar-la-aplicación">Cómo ejecutar la aplicación</a></li>
   </ul>
 </details>
@@ -20,9 +35,20 @@ Repositorio creado para explicar el patrón Singleton y su implementación media
 
 El patrón Singleton es un **patrón de diseño creacional** que garantiza que una clase tenga una **única instancia en toda la aplicación** y proporciona un **punto de acceso global a esa instancia**.
 
-Imagina que tienes una aplicación y necesitas un objeto de configuración. 
+### 👉🏼 ¿Por qué nos puede interesar tener una sola instancia de una clase?
 
-No tiene sentido crear 10 objetos de configuración diferentes porque todos tendrían la misma información. El Singleton asegura que solo exista uno y que todos lo compartan.
+Imagina que tienes una aplicación, con unos usuarios, y estos usuarios están sujetos a una única configuración de la aplicación común para todos los usuarios (número máximo de intentos de login, longitud de password, modo mantenimiento, etc...).
+
+Podrías representar esa configuración como una clase que se encargara de gestionarla.
+
+Como esa configuración DEBE ser común a todos los usuarios:
+
+- no tendría sentido crear un objeto de configuración diferente para cada usuario que se creara, porque todos esos objetos de configuración tendrían la misma información (si tuviéramos 20 usuarios, tendríamos 20 objetos de configuración, cuando en realidad, con uno solo sería suficiente).
+- si tuvieramos 20 usuarios, cada uno con su objeto de configuración, si quisiéramos, por ejemplo, poner la aplicación en modo mantenimiento, ¿cuál de esos 20 objetos de configuración tendríamos que modificar?. Si modificáramos sólo uno, el resto de los usuarios no tendrían la configuración actualizada. Por tanto, tendríamos que modificar la configuración de cada uno de esos 20 objetos de configuración, lo que sería absurdo.
+
+Debido a la naturaleza dinámica de una aplicación (parámetros de configuración, conexión a una base de datos, ...), que implica que ésta puede cambiar dinámicamente durante la ejecución de la aplicación, hace que tengamos que asegurarnos de que cuando haya cambios en esos parámetros, todos los elementos de la aplicación puedan ver esos cambios.
+
+El Singleton asegura que solo exista uno y que todos lo compartan, con todas las ventajas que eso conlleva.
 
 ### 👉🏼 ¿Para qué se usa?
 
@@ -42,11 +68,7 @@ Ejemplos del mundo real:
 
 ### 👉🏼 ¿Qué características debe tener un patrón Singleton?
 
-✅ **IMPRESCINDIBLE** (lo MÍNIMO para que sea Singleton)
-
-Solo hay 3 cosas absolutamente necesarias:
-
-**1. Constructor privado:**
+**1. Constructor privado - ✅ IMPRESCINDIBLE**
 
 ```php
 private function __construct() {}
@@ -54,7 +76,7 @@ private function __construct() {}
 
 ¿Por qué? Sin esto, cualquiera puede hacer new MiClase() y tendrías múltiples instancias. Es OBLIGATORIO.
 
-**2. Propiedad estática privada que guarda la instancia:**
+**2. Propiedad estática privada que guarda la instancia - ✅ IMPRESCINDIBLE**
 
 ```php
 private static ?MiClase $instancia = null;
@@ -62,7 +84,7 @@ private static ?MiClase $instancia = null;
 
 ¿Por qué? Necesitas un lugar donde guardar la única instancia. Es OBLIGATORIO.
 
-**3. Método estático público para obtener la instancia:**
+**3. Método estático público para obtener la instancia - ✅ IMPRESCINDIBLE**
 
 ```php
 public static function obtenerInstancia(): MiClase
@@ -76,13 +98,8 @@ public static function obtenerInstancia(): MiClase
 
 ¿Por qué? Es la única forma de acceder a la instancia. Es OBLIGATORIO.
 
-Con solo estas 3 cosas ya tienes un Singleton funcional.
 
-<br>
-
-⚠️ **RECOMENDADO**, pero NO obligatorio (buenas prácticas)
-
-**4. Prevención de clonación:**
+**4. Prevención de clonación - ⚠️ RECOMENDADO**, pero NO obligatorio (buenas prácticas)
 
 ¿Por qué se recomienda evitar la clonación?
 
@@ -113,7 +130,7 @@ $instancia2 = clone $instancia1; // ❌ ERROR: Cannot access private method __cl
 
 Evidentemente, SÍ podrías clonar la instancia original del singleton desde dentro de la propia clase singleton, pero en este caso, estarías rompiendo el Singleton tú mismo intencionadamente. No tiene sentido hacerlo.
 
-**5. Prevención de deserialización:**
+**5. Prevención de deserialización - ⚠️ RECOMENDADO**, pero NO obligatorio (buenas prácticas)
 
 ¿Por qué se recomienda evitar la deserialización?
 
@@ -346,10 +363,16 @@ El usuario **consulta** la configuración global (Singleton) para:
 
 Pero el usuario **NO modifica** la configuración. Solo la lee para ajustarse a las reglas globales.
 
-#### 📌 index.php - Archivo Principal (DEMOSTRACIÓN)
+#### 🧠 logica.php - Lógica Principal (demostración del Singleton)
 
 **¿Qué hace?**
 Es el archivo de ejecución que demuestra el funcionamiento del sistema.
+
+**¿Cuándo se ejecuta?**
+Se ejecuta automáticamente al cargar la página web, cuando se llama al archivo index.php.
+
+**¿Qué gestiona?**
+Gestiona la creación de usuarios y los inicios de sesión.
 
 **Acciones que realiza:**
 
@@ -372,13 +395,23 @@ Es el archivo de ejecución que demuestra el funcionamiento del sistema.
    - Modifica un valor desde `$config1`
    - Lee ese valor desde `$config2` → muestra que el cambio se ve en ambas
 
-5. **Muestra toda la información** en HTML:
+#### ▶️ index.php - Archivo de entrada (html + logica.php)
+
+**¿Qué hace?**
+Es el archivo de entrada que muestra, en HTML, toda la información ejecutada por `logica.php`.
+
+**Acciones que realiza:**
+
+1. **Incluye el archivo de logica.php**: 
+   - Este archivo contiene la lógica principal del sistema, la que va a testear nuestro Singleton.
+
+2. **Muestra toda la información** en HTML:
    - Configuración global
    - Usuarios registrados con sus estados
    - Resultados de los intentos de login
    - Demostración del Singleton
 
-#### 4. 🎨 estilos.css - Presentación Visual
+#### 🎨 estilos.css - Presentación Visual (estilos css)
 
 **¿Qué hace?**
 Proporciona estilos CSS para que la página se vea profesional y sea fácil de leer.
