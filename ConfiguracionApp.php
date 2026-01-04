@@ -6,49 +6,37 @@
  */
 class ConfiguracionApp
 {
-    private static ?ConfiguracionApp $instancia = null;
-    private array $configuracion = [];
+    private static ?ConfiguracionApp $instancia = null; // CARACTERÍSTICA OBLIGATORIA EN UN SINGLETON
+
+    private array $configuracion = [
+        'nombre_aplicacion' => 'Sistema de Gestión de Usuarios',
+        'patron' => 'Singleton',
+        'version' => '1.0.0',
+        'entorno' => 'desarrollo', // desarrollo | produccion
+        'modo_mantenimiento' => false,
+        'sesion_timeout_minutos' => 30,
+        'max_intentos_login' => 3,
+        'longitud_minima_password' => 8,
+        'zona_horaria' => 'Europe/Madrid',
+        'idioma_predeterminado' => 'es',
+        'registros_por_pagina' => 25
+    ];
 
     /**
      * Constructor privado - Se ejecuta solo una vez
      */
-    private function __construct()
+    private function __construct() // CARACTERÍSTICA OBLIGATORIA EN UN SINGLETON
     {
-        // Configuración global de la aplicación
-        $this->configuracion = [
-            'nombre_aplicacion' => 'Sistema de Gestión de Usuarios',
-            'version' => '2.1.0',
-            'entorno' => 'desarrollo', // desarrollo | produccion
-            'modo_mantenimiento' => false,
-            'sesion_timeout_minutos' => 30,
-            'max_intentos_login' => 3,
-            'longitud_minima_password' => 8,
-            'zona_horaria' => 'Europe/Madrid',
-            'idioma_predeterminado' => 'es',
-            'registros_por_pagina' => 25
-        ];
+        // Configuración global de la aplicación (toma los valores establecidos en el array)
         
         // Aplicar zona horaria
         date_default_timezone_set($this->configuracion['zona_horaria']);
     }
 
     /**
-     * Evita la clonación
-     */
-    private function __clone() {}
-
-    /**
-     * Evita la deserialización
-     */
-    public function __wakeup()
-    {
-        throw new \Exception("No se puede deserializar un Singleton");
-    }
-
-    /**
      * Obtener la única instancia de configuración
      */
-    public static function obtenerInstancia(): ConfiguracionApp
+    public static function obtenerInstancia(): ConfiguracionApp // CARACTERÍSTICA OBLIGATORIA EN UN SINGLETON
     {
         if (self::$instancia === null) {
             self::$instancia = new self();
@@ -102,5 +90,18 @@ class ConfiguracionApp
     public function obtenerTodo(): array
     {
         return $this->configuracion;
+    }
+
+    /**
+     * Evita la clonación
+     */
+    private function __clone() {} // CARACTERÍSTICA RECOMENDADA EN UN SINGLETON
+
+    /**
+     * Evita la deserialización
+     */
+    public function __wakeup() // CARACTERÍSTICA RECOMENDADA EN UN SINGLETON
+    {
+        throw new \Exception("No se puede deserializar un Singleton");
     }
 }
