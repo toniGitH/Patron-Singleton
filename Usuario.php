@@ -33,8 +33,8 @@ class Usuario
         $this->nombre = $nombre;
         $this->email = $email;
         $this->password = password_hash($password, PASSWORD_DEFAULT);
-        $this->fechaRegistro = new \DateTime();
-        $this->ultimoAcceso = new \DateTime();
+        $this->fechaRegistro = new DateTime();
+        $this->ultimoAcceso = new DateTime();
     }
 
     /**
@@ -57,11 +57,11 @@ class Usuario
         // Verificar contraseña
         if (password_verify($passwordIntentada, $this->password)) {
             $this->intentosFallidos = 0;
-            $this->ultimoAcceso = new \DateTime();
+            $this->ultimoAcceso = new DateTime();
             return true;
         }
 
-        // Contraseña incorrecta
+        // Si la contraseña es incorrecta (el anterior condicional no se cumple)
         $this->intentosFallidos++;
         $maxIntentos = $config->obtener('max_intentos_login');
 
@@ -81,7 +81,7 @@ class Usuario
         $config = ConfiguracionApp::obtenerInstancia();
         $timeoutMinutos = $config->obtener('sesion_timeout_minutos');
         
-        $ahora = new \DateTime();
+        $ahora = new DateTime();
         $diferencia = $ahora->getTimestamp() - $this->ultimoAcceso->getTimestamp();
         $minutosPasados = $diferencia / 60;
 
@@ -93,7 +93,7 @@ class Usuario
      */
     public function renovarSesion(): void
     {
-        $this->ultimoAcceso = new \DateTime();
+        $this->ultimoAcceso = new DateTime();
     }
 
     /**
