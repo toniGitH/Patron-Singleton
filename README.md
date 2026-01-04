@@ -17,14 +17,14 @@ Repositorio creado para explicar el patrón Singleton y su implementación media
         <li>🎯 <a href="#-para-qué-se-usa">¿Para qué se usa?</a></li>
         <li>💡 <a href="#-por-qué-nos-puede-interesar-tener-una-sola-instancia-de-una-clase">¿Por qué nos puede interesar tener una sola instancia de una clase?</a></li>
         <li>📋 <a href="#-qué-características-debe-tener-un-patrón-singleton">¿Qué características debe tener un patrón Singleton?</a></li>
-        <li>⚠️ <a href="#-qué-supone-usar-singleton">¿Qué supone usar Singleton?</a></li>
+        <li>📌 <a href="#-qué-supone-usar-singleton">¿Qué supone usar Singleton?</a></li>
       </ul>
     </li>
     <li>🧪 <a href="#-ejemplo-de-implementación-sistema-de-gestión-de-usuarios">Ejemplo de implementación: Sistema de Gestión de Usuarios</a>
       <ul>
         <li>🔧 <a href="#-qué-hace-esta-aplicación-de-ejemplo">¿Qué hace esta aplicación de ejemplo?</a></li>
         <li>🔄 <a href="#-funcionamiento-de-la-aplicación-flujo-completo">Funcionamiento de la aplicación (flujo completo)</a></li>
-        <li>🎖️ <a href="#-el-papel-del-singleton">El papel del Singleton</a></li>
+        <li>🏅 <a href="#-el-papel-del-singleton">El papel del Singleton</a></li>
         <li>🤼 <a href="#-comparación-con-singleton-vs-sin-singleton">Comparación: Con Singleton vs Sin Singleton</a></li>
         <li>📄 <a href="#-explicación-de-cada-archivo-del-ejemplo">Explicación de cada archivo del ejemplo</a></li>
       </ul>
@@ -187,7 +187,7 @@ public function __wakeup()
 }
 ```
 
-### ⚠️ ¿Qué supone usar Singleton?
+### 📌 ¿Qué supone usar Singleton?
 
 Ventajas:
 
@@ -243,7 +243,7 @@ Es un **sistema de gestión de usuarios** que:
    - Se bloquea si falla demasiadas veces (según la configuración global)
 4. **La demostración muestra** que todos los usuarios comparten la misma configuración
 
-### 🎖️ El papel del Singleton:
+### 🏅 El papel del Singleton:
 
 - **ConfiguracionApp es única**: Solo existe una configuración para todos
 - **Todos los usuarios la comparten**: No importa cuántos usuarios crees, todos leen la misma configuración
