@@ -149,11 +149,13 @@ No se puede serializar cualquier objeto ni se puede deserializar cualquier caden
 
 En la **serialización** interviene el método mágico **__sleep()**, y en la **deserialización** interviene el método mágico **__wakeup()**.
 
-Para mantener la integridad de un Singleton, **la serialización no es un problema**, porque sólo convierte nuestra instancia en una cadena de texto, pero **la deserialización SÍ lo es**, porque al deserializar la cadena de texto, **se crearía una nueva instancia de la clase singleton**, lo que rompería el Singleton.
+Para mantener la integridad de un Singleton, **la serialización no es un problema**, porque sólo convierte nuestra instancia en una cadena de texto, pero no crea una nueva instancia. Sin embargo, **la deserialización SÍ es un problema**, porque al deserializar la cadena de texto, **SÍ se crearía una nueva instancia de la clase singleton**, lo que rompería el Singleton.
 
-Por ese motivo, si queremos proteger un Singleton ante este problema, debemos actuar sobre el método **__wakeup()**, que es el que se ejecuta cuando se deserializa un objeto. Debemos definirlo en la clase Singleton para que sobreescriba el método mágico **__wakeup()** que viene por defecto en PHP.
+Por eso, si queremos proteger un Singleton ante este problema, debemos actuar sobre la **deserialización**, es decir, sobre el método **__wakeup()**, que es el que se ejecuta cuando se deserializa un objeto. Debemos definirlo en la clase Singleton para que sobreescriba el método mágico **__wakeup()** que viene por defecto en PHP.
 
-Dado que el método **__wakeup()** NO acepta ser privado, lo que significa que no se puede hacer `private function __wakeup() {}`, debemos mantenerlo como `public function __wakeup() {}`, y en su interior, lanzar una excepción:
+Ahora bien, el método **__wakeup()** IGNORA la visibilidad privada, lo que significa que aunque hagamos `private function __wakeup() {}`, PHP lo ignorará y lo seguirá ejecutando como `public function __wakeup() {}`.
+
+Lo que tenemos que hacer entonces es mantenerlo como `public function __wakeup() {}`, y en su interior, lanzar una excepción:
 
 ```php
 public function __wakeup()
