@@ -3,8 +3,11 @@
 
 Repositorio creado para explicar el patrón Singleton y su implementación mediante un ejemplo práctico en PHP.
 
+
+## 📖 Tabla de contenidos
+
 <details>
-  <summary><h2 style="display: inline-block; margin: 0; padding: 0; border: none;">📑 Índice de contenidos</h2></summary>
+  <summary>Mostrar contenidos</summary>
   <ul>
     <li>🔎 <a href="#-el-patrón-singleton">El patrón Singleton</a>
       <ul>
