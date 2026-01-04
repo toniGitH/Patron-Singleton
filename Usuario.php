@@ -1,5 +1,7 @@
 <?php
 
+use DateTime;
+
 require_once 'ConfiguracionApp.php';
 
 /**
@@ -12,8 +14,8 @@ class Usuario
     private string $nombre;
     private string $email;
     private string $password;
-    private \DateTime $fechaRegistro;
-    private \DateTime $ultimoAcceso;
+    private DateTime $fechaRegistro;
+    private DateTime $ultimoAcceso;
     private int $intentosFallidos = 0;
     private bool $bloqueado = false;
 
