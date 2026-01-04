@@ -3,11 +3,13 @@
 
 Repositorio creado para explicar el patrón Singleton y su implementación mediante un ejemplo práctico en PHP.
 
+<br>
 
 ## 📖 Tabla de contenidos
 
 <details>
   <summary>Mostrar contenidos</summary>
+  <br>
   <ul>
     <li>🔎 <a href="#-el-patrón-singleton">El patrón Singleton</a>
       <ul>
