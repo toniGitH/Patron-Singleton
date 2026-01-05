@@ -11,17 +11,17 @@
     $mensajes = [];
 
     try {
-        // Usuario 1
+        // Crear Usuario 1
         $usuario1 = new Usuario('Ana García', 'ana@ejemplo.com', 'Password123');
         $usuarios[] = $usuario1;
         $mensajes[] = ['tipo' => 'exito', 'texto' => "Usuario '{$usuario1->getNombre()}' creado correctamente"];
 
-        // Usuario 2
+        // Crear Usuario 2
         $usuario2 = new Usuario('Carlos Ruiz', 'carlos@ejemplo.com', 'Segura456');
         $usuarios[] = $usuario2;
         $mensajes[] = ['tipo' => 'exito', 'texto' => "Usuario '{$usuario2->getNombre()}' creado correctamente"];
 
-        // Usuario 3
+        // Crear Usuario 3
         $usuario3 = new Usuario('Laura Pérez', 'laura@ejemplo.com', 'MiClave789');
         $usuarios[] = $usuario3;
         $mensajes[] = ['tipo' => 'exito', 'texto' => "Usuario '{$usuario3->getNombre()}' creado correctamente"];
