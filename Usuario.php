@@ -1,7 +1,5 @@
 <?php
 
-use DateTime;
-
 require_once 'ConfiguracionApp.php';
 
 /**
@@ -14,8 +12,8 @@ class Usuario
     private string $nombre;
     private string $email;
     private string $password;
-    private DateTime $fechaRegistro;
-    private DateTime $ultimoAcceso;
+    private \DateTime $fechaRegistro;
+    private \DateTime $ultimoAcceso;
     private int $intentosFallidos = 0;
     private bool $bloqueado = false;
 
@@ -33,8 +31,8 @@ class Usuario
         $this->nombre = $nombre;
         $this->email = $email;
         $this->password = password_hash($password, PASSWORD_DEFAULT);
-        $this->fechaRegistro = new DateTime();
-        $this->ultimoAcceso = new DateTime();
+        $this->fechaRegistro = new \DateTime();
+        $this->ultimoAcceso = new \DateTime();
     }
 
     /**
@@ -57,7 +55,7 @@ class Usuario
         // Verificar contraseña
         if (password_verify($passwordIntentada, $this->password)) {
             $this->intentosFallidos = 0;
-            $this->ultimoAcceso = new DateTime();
+            $this->ultimoAcceso = new \DateTime();
             return true;
         }
 
@@ -81,7 +79,7 @@ class Usuario
         $config = ConfiguracionApp::obtenerInstancia();
         $timeoutMinutos = $config->obtener('sesion_timeout_minutos');
         
-        $ahora = new DateTime();
+        $ahora = new \DateTime();
         $diferencia = $ahora->getTimestamp() - $this->ultimoAcceso->getTimestamp();
         $minutosPasados = $diferencia / 60;
 
@@ -93,7 +91,7 @@ class Usuario
      */
     public function renovarSesion(): void
     {
-        $this->ultimoAcceso = new DateTime();
+        $this->ultimoAcceso = new \DateTime();
     }
 
     /**
