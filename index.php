@@ -1,5 +1,5 @@
 <?php
-    require_once 'logica.php';
+    require_once 'main.php';
 ?>
 
 <!DOCTYPE html>

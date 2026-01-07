@@ -371,7 +371,7 @@ El usuario **consulta** la configuración global (Singleton) para:
 
 Pero el usuario **NO modifica** la configuración. Solo la lee para ajustarse a las reglas globales.
 
-#### 🧠 logica.php - Lógica Principal (demostración del Singleton)
+#### 🧠 main.php - Lógica Principal (demostración del Singleton)
 
 **¿Qué hace?**
 Es el archivo de ejecución que demuestra el funcionamiento del sistema.
@@ -403,14 +403,14 @@ Gestiona la creación de usuarios y los inicios de sesión.
    - Modifica un valor desde `$config1`
    - Lee ese valor desde `$config2` → muestra que el cambio se ve en ambas
 
-#### ▶️ index.php - Archivo de entrada (html + logica.php)
+#### ▶️ index.php - Archivo de entrada (presentación html + lógica de ejecución)
 
 **¿Qué hace?**
-Es el archivo de entrada que muestra, en HTML, toda la información ejecutada por `logica.php`.
+Es el archivo de entrada que muestra, en HTML, toda la información ejecutada por `main.php`.
 
 **Acciones que realiza:**
 
-1. **Incluye el archivo de logica.php**: 
+1. **Incluye el archivo de main.php**: 
    - Este archivo contiene la lógica principal del sistema, la que va a testear nuestro Singleton.
 
 2. **Muestra toda la información** en HTML:
