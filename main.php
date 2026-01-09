@@ -83,4 +83,75 @@
     $config1->establecer('max_intentos_login', 5);
     $valorDesdeConfig2 = $config2->obtener('max_intentos_login');
 
-?>
+
+// Preparación de datos para la visualización CLI
+$resultados = [];
+
+// 1. Resultados de creación de usuarios
+$salidaUsuarios = "";
+foreach ($mensajes as $msj) {
+    $icono = $msj['tipo'] === 'exito' ? '✅' : '❌';
+    $salidaUsuarios .= "{$icono} {$msj['texto']}\n";
+}
+$resultados[] = [
+    'titulo' => 'CREACIÓN DE USUARIOS',
+    'descripcion' => 'Se intentan crear usuarios con diferentes validaciones',
+    'salida' => $salidaUsuarios
+];
+
+// 2. Resultados de Login
+$salidaLogin = "";
+foreach ($resultadosLogin as $res) {
+    if ($res['tipo'] === 'exito') $icono = '✅';
+    elseif ($res['tipo'] === 'advertencia') $icono = '⚠️';
+    else $icono = '❌';
+    
+    $salidaLogin .= "{$icono} User: {$res['usuario']} | {$res['resultado']}\n";
+}
+$resultados[] = [
+    'titulo' => 'SIMULACIÓN DE LOGIN',
+    'descripcion' => 'Intentos de inicio de sesión y bloqueo de cuenta',
+    'salida' => $salidaLogin
+];
+
+// 3. Singleton
+$salidaSingleton = "";
+$salidaSingleton .= ($sonLaMisma ? "✅ Las instancias son idénticas" : "❌ Las instancias son diferentes") . "\n";
+$salidaSingleton .= "Valor cambiado en ref1: 'max_intentos_login' = 5\n";
+$salidaSingleton .= "Valor leído en ref2: 'max_intentos_login' = " . $valorDesdeConfig2 . "\n";
+
+$resultados[] = [
+    'titulo' => 'PRUEBA DEL PATRÓN SINGLETON',
+    'descripcion' => 'Verificamos que múltiples llamadas devuelven la misma instancia y comparten estado',
+    'salida' => $salidaSingleton
+];
+
+// Ventajas del Singleton
+$ventajas = [
+    "Garantiza que una clase tenga una única instancia.",
+    "Proporciona un punto de acceso global a esa instancia.",
+    "Permite compartir estado (configuración, conexión DB) consistentemente."
+];
+
+// Si el archivo se ejecuta directamente (CLI) y no es un include
+if (count(debug_backtrace()) === 0) {
+    echo "========================================\n";
+    echo "EJEMPLO SIMPLE DEL PATRÓN SINGLETON\n";
+    echo "========================================\n\n";
+
+    foreach ($resultados as $resultado) {
+        echo $resultado['titulo'] . "\n";
+        echo $resultado['descripcion'] . "\n";
+        echo str_repeat("-", 40) . "\n";
+        echo $resultado['salida'];
+        echo "\n\n";
+    }
+
+    echo "============================================\n";
+    echo "QUÉ VENTAJA APORTA EL PATRÓN SINGLETON:\n";
+    echo "============================================\n";
+    echo "Supongamos que queremos asegurar que toda la app use la misma configuración\n";
+    foreach ($ventajas as $ventaja) {
+        echo "✓ " . $ventaja . "\n";
+    }
+}
