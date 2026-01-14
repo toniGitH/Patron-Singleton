@@ -404,7 +404,7 @@ Gestiona la creación de usuarios y los inicios de sesión.
    - Modifica un valor desde `$config1`
    - Lee ese valor desde `$config2` → muestra que el cambio se ve en ambas
 
-#### ▶️ index.php - Archivo de entrada (presentación html + lógica de ejecución)
+#### 🌐 index.php - Archivo de entrada (presentación html + lógica de ejecución)
 
 **¿Qué hace?**
 Es el archivo de entrada que muestra, en HTML, toda la información ejecutada por `main.php`.
@@ -441,48 +441,63 @@ Proporciona estilos CSS para que la página se vea profesional y sea fácil de l
 
 <br>
 
-## 🚀 Cómo ejecutar la aplicación
+## 🚀 ¿Cómo ejecutar la aplicación?
 
-1. Crea la carpeta del proyecto (por ejemplo, patrones/singleton) dentro de la carpeta htdocs (o equivalente según la versión de XAMPP y sistema operativo que uses).
-2. Guarda en esa carpeta los archivos PHP y CSS.
+Tienes dos alternativas para visualizar el resultado de la aplicación:
+- visualizando los resultados mediante el **navegador** (con XAMPP o con un servidor web local).
+- directamente desde la **terminal**, en texto plano, ejecutando el archivo principal, `main.php`.
 
-#### 📍 Para ejecutarlo mediante XAMPP:
+En cualquiera de los dos casos, primero debes:
+1. Crear la carpeta del proyecto (por ejemplo, patrones/singleton). 
+2. Guardar en esa carpeta los archivos PHP y CSS.
 
-3. Arranca XAMPP.
-4. Accede a index.php desde tu navegador (por ejemplo: http://localhost/patrones/singleton/index.php)
 
-#### 📍 Para ejecutarlo usando el servidor web interno de PHP
+#### 🖥️ Para ejecutarlo mediante la Terminal:
+
+1. Abre la terminal y navega a la carpeta de tu proyecto, por ejemplo:
+
+```bash
+cd ~/Documentos/Proyectos/patrones/singleton
+```
+
+2. Ejecuta, desde esa ubicación, el archivo main.php:
+
+```bash
+php main.php
+```
+
+#### 🌐 Para ejecutarlo mediante XAMPP:
+
+1. Mueve la carpeta del proyecto a la carpeta htdocs (o equivalente según la versión de XAMPP y sistema operativo que uses).
+2. Arranca XAMPP.
+3. Accede a index.php desde tu navegador (por ejemplo: http://localhost/patrones/singleton/index.php)
+
+#### 🌐 Para ejecutarlo usando el servidor web interno de PHP
 
 PHP trae un servidor web ligero que sirve para desarrollo. No necesitas instalar Apache ni XAMPP.
 
-3. Abre la terminal y navega a la carpeta de tu proyecto:
+1. Abre la terminal y navega a la carpeta de tu proyecto:
 
 ```bash
-cd ~/Documentos/htdocs/patrones/singleton
+cd ~/Documentos/.../patrones/singleton
 ```
-4. Dentro de esa ubicación, ejecuta:
+2. Dentro de esa ubicación, ejecuta:
 
 ```bash
 php -S localhost:8000
 ```
 
->💡
->
-> No es obligatorio usar el puerto 8000, puedes usar el que desees, por ejemplo, el 8001.
+>💡 No es obligatorio usar el puerto 8000, puedes usar el que desees, por ejemplo, el 8001.
 
 Con esto, lo que estás haciendo es crear un servidor web php (cuya carpeta raíz es la carpeta seleccionada), que está escuchando en el puerto 8000 (o en el que hayas elegido).
 
->💡
->
-> Si quisieras, podrías crear simultáneamente tantos servidores como proyectos tengas en tu ordenador, siempre y cuando cada uno estuviera escuchando en un puerto diferente (8001, 8002, ...).
+>💡 Si quisieras, podrías crear simultáneamente tantos servidores como proyectos tengas en tu ordenador, siempre y cuando cada uno estuviera escuchando en un puerto diferente (8001, 8002, ...).
 
-5. Ahora, abre tu navegador y accede a http://localhost:8000
+3. Ahora, abre tu navegador y accede a http://localhost:8000
 
 Ya podrás visualizar el documento index.php con toda la información del ejemplo.
 
->💡
->
-> No es necesario indicar `http://localhost:8000/index.php` porque el servidor va a buscar dentro de la carpeta raíz (en este caso, en Documentos/htdocs/patrones/singleton), un archivo index.php o index.html de forma automática. Si existe, lo sirve como página principal.
+>💡 No es necesario indicar `http://localhost:8000/index.php` porque el servidor va a buscar dentro de la carpeta raíz (en este caso, en Documentos/.../patrones/singleton), un archivo index.php o index.html de forma automática. Si existe, lo sirve como página principal.
 >
 > Por eso, estas dos URLs funcionan igual:
 >
