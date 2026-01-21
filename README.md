@@ -105,10 +105,9 @@ public static function obtenerInstancia(): MiClase
 
 ¿Por qué? Es la única forma de acceder a la instancia. Es OBLIGATORIO.
 
-
 **4. Prevención de clonación - ⚠️ RECOMENDADO**, pero NO obligatorio (buenas prácticas)
 
-¿Por qué se recomienda evitar la clonación?
+#### ¿Por qué se recomienda evitar la clonación?
 
 Evita que alguien haga:
 
@@ -116,12 +115,49 @@ Evita que alguien haga:
 $instancia1 = MiClase::obtenerInstancia();
 $instancia2 = clone $instancia1; // Sin prevenir la clonación, esto crearía una copia de la instancia original
 ```
+Es decir, que la clonación es un proceso que nos permitiría, una vez creada la instancia original del singleton `$instancia1` (de la que sólo queremos tener una para toda la aplicación) crear una copia de esta instancia original desde fuera de la clase singleton, de forma que **se rompería el Singleton porque tendríamos dos instancias diferentes de la misma clase**.
 
-El método **__clone()** es un **método mágico nativo de PHP** que se ejecuta automáticamente cuando intentas clonar un objeto con la palabra `clone`.
+Para evitar este problema, primero hay que entender cómo funciona el proceso de clonación en PHP.
 
-Es decir, que es un método que nos permitiría, una vez creada la instancia original del singleton `$instancia1` (de la que sólo queremos tener una para toda la aplicación) crear una copia de esta instancia original desde fuera de la clase singleton, de forma que **se rompería el Singleton porque tendríamos dos instancias diferentes de la misma clase**.
+#### ¿Cómo funciona la clonación en PHP?
 
-La solución está en implementar, **DENTRO** de la propia clase singleton, el método **__clone()** , como **método privado**:
+Un objeto en PHP puede tener diferentes propiedades, y éstas pueden ser de diferentes tipos:
+
+- valores primitivos o escalares (int, string, bool, etc...),
+- objetos,
+- arrays, que pueden contener valores escalares o primitivos y también objetos
+
+**El operador clone**
+
+En el proceso de clonación, por un lado, existe un operador llamado **clone**, que **no es un método de PHP, sino un operador** (como +, -, *, /, etc...), pero que realiza una operación algo más compleja: es capaz de copiar un objeto con todas sus propidades, siempre que dichas propiedades sean valores primitivos o escalares y arrays de valores primitivos o escalares.
+
+No es capaz de copiar como tal propiedades que sean objetos, ni objetos que contenga una prooiedad que sea un array. O mejor dicho, sí que copia la propiedad en sí, pero su valor, en este caso, ese objeto, no es un verdadero duplicado, sino una referencia al objeto original, con lo que si modificamos el objeto original, también se modificará el objeto clonado, y viceversa.
+
+A este tipo de clonado se le llama *shallow copy*, es decir, que copia el objeto con todas sus propiedades, pero en el caso de propiedades que son objetos, realmente no es un clon independiente, sino que mantiene la referencia al objeto original.
+
+**El método mágico __clone()**
+
+Por otro lado, existe el método **__clone()**, que sí es un **método**, concretamente es un **método mágico nativo de PHP** que **se ejecuta automáticamente** cuando utilizamos el operador **clone**, y que por defecto está **vacío**, es decir, no tiene implementación.
+
+Este método **__clone()** está diseñado como vacío, y su propósito es que pueda ser reescrito dentro de una determinada clase, conteniendo instrucciones para copiar sus propiedades que sean objetos. Es decir, dado que el operador **clone** no hace una verdadera copia de aquellas propiedades que sean objetos, PHP nos proporciona un método "autoejecutable" o **hook** que se ejecuta al usar el operador **clone**, para que incluyamos dentro de él todas aquellas instrucciones que consideremos oportunas para que estas propiedades objetos sí se clonen realmente (como valores independientes de los del objeto original).
+
+A este tipo de clonado, en el que se implementa el método **__clone()** para copiar también las propiedades que sean objetos, se le llama *deep copy*.
+
+Por tanto, podríamos decir que el proceso de clonado se divide en dos fases: "shallow copy" y "deep copy".
+
+**El proceso de clonación**
+
+Pero lo importante que hay que entender es que, en el proceso de clonación, tanto el operador **clone** como el método mágico **__clone** ACTÚAN EN CONJUNTO.
+
+Cuando llamamos al operador **clone**, durante el proceso de clonación que se inicia, se va a comprobar si el método **__clone** es **ACCESIBLE**::
+
+- si el método **__clone()** existe y es *public*, el proceso de clonado se ejecutará sin problemas, ejecutándose la *shallow copy* más la *deep copy* (se copiarán las propiedades objeto que se hayan implementado en el método **__clone()**)
+- si el método **__clone()** no existe, el proceso de clonado también se ejecutará sin problemas, pero sólo se ejecutará la *shallow copy* (no se copiarán las propiedades objeto puesto que el método **__clone()** no existe y por tanto no ha especificado qué propiedades objeto copiar)
+- si el método **__clone()** existe pero es *private* o *protected*, el proceso de clonado fallará, y no se ejecutará ninguna de las fases.
+
+#### ¿Cómo evitar la clonación?
+
+Dado que, por lo visto anteriormente, el único escenario en el que el clonado "falla" es cuando el método **__clone()** existe y es *private* o *protected*, la manera más segura para evitar la clonación es implementar, **DENTRO** de la propia clase singleton, el método **__clone()** , como **método privado**:
 
 ```php
 private function __clone() {}
